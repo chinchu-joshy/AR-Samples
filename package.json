@@ -1,0 +1,23 @@
+{
+  "name": "ar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinchu-joshy/AR-Samples.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chinchu-joshy/AR-Samples/issues"
+  },
+  "homepage": "https://github.com/chinchu-joshy/AR-Samples#readme",
+  "dependencies": {
+    "gh-pages": "^4.0.0"
+  }
+}
