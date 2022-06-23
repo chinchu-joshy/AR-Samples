@@ -9,6 +9,10 @@ import {
 class App{
 	constructor(){
 		const container = document.createElement( 'div' );
+		var text = document.createTextNode("Tutorix is the best e-learning platform");
+		container.appendChild(text)
+		const canvas = document.querySelector("canvas.webgl");
+		console.log(container)
 		document.body.appendChild( container );
 		this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
 		this.camera.position.set( 0, 0, 4 );
@@ -37,7 +41,7 @@ class App{
         this.camera.updateProjectionMatrix();
         this.renderer.setSize( window.innerWidth, window.innerHeight );  
     }
-	render( ) {   
+	render() {   
         this.mesh.rotateY( 0.01 );
         this.renderer.render( this.scene, this.camera );
     }
