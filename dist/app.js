@@ -10,7 +10,7 @@ import {
 } from "./js/motion-controllers.module.js";
 
 let camera, scene, renderer;
-let controller, textureBase, textureWall, texture, textureRoof, ventTexture;
+// let controller, textureBase, textureWall, texture, textureRoof, ventTexture;
 class App {
   constructor() {
     this.fbxLoader = new FBXLoader();
@@ -26,7 +26,7 @@ class App {
     );
     this.camera.position.set(0, 0, 4);
     this.scene = new THREE.Scene();
-    const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.1);
     this.scene.add(ambient);
     const light = new THREE.DirectionalLight();
     light.position.set(0.2, 1, 1);
@@ -38,26 +38,31 @@ class App {
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-
+    this.renderer.xr.enabled = true;
     /* -------------------------- adding the fbx model -------------------------- */
    
-
+    const texture = new THREE.TextureLoader().load("Model/walnut-normal.jpg");
+    const textureWall = new THREE.TextureLoader().load("Model/wall-3.png");
+    const textureRoof = new THREE.TextureLoader().load("Model/RusticBlack.jpeg");
+   const textureBase = new THREE.TextureLoader().load("Model/base.jpg");
+   
+   const ventTexture = new THREE.TextureLoader().load("Model/Venttexture.jpg");
     this.fbxLoader.load("Model/model-3.fbx",  (object)=> {
       // (draggable.children[0].material.clippingPlanes = clipPlanes),
       // console.log(draggable)
       object.traverse(function (child) {
         if (child.isMesh && child.name.includes("Shed_SaltBox")) {
            
-          child.material = new THREE.MeshPhongMaterial();
-          child.castShadow = true;
-          child.receiveShadow = true;
-          child.material.map = textureBase;
-          child.material.bumpScale = 0.08;
-        //   child.material.map.wrapS = THREE.RepeatWrapping;
-        //   child.material.map.wrapT = THREE.RepeatWrapping;
-          child.material.color = new THREE.Color(0xf0f0f0);
-          child.userData.draggable = false;
-          child.userData.name = "bottom";
+            child.material = new THREE.MeshPhongMaterial();
+            child.castShadow = true;
+            child.receiveShadow = true;
+            child.material.map = textureBase;
+            child.material.bumpScale = 0.008;
+            child.material.map.wrapS = THREE.RepeatWrapping;
+            child.material.map.wrapT = THREE.RepeatWrapping;
+            child.material.color = new THREE.Color(0x0f0f0f0f);
+            child.userData.draggable = false;
+            child.userData.name = "bottom";
         }
         if (child.isMesh && child.name.includes("Trim")) {
           child.material = new THREE.MeshPhongMaterial();
@@ -65,8 +70,8 @@ class App {
           child.receiveShadow = true;
           child.material.bumpMap = texture;
           child.material.bumpScale = 0.08;
-        //   child.material.bumpMap.wrapS = THREE.RepeatWrapping;
-        //   child.material.bumpMap.wrapT = THREE.RepeatWrapping;
+          child.material.bumpMap.wrapS = THREE.RepeatWrapping;
+          child.material.bumpMap.wrapT = THREE.RepeatWrapping;
           child.material.color = new THREE.Color(0xffffff);
           child.userData.draggable = false;
           child.userData.name = "trim";
@@ -90,20 +95,19 @@ class App {
                 value.name == "right_side" ||
                 value.name == "front_side")
             ) {
-              value.material = new THREE.MeshStandardMaterial();
-              value.material.bumpScale = 0.3;
-              value.material.color = new THREE.Color(0x382c16);
-              value.material.DoubleSide = true;
-              value.material.bumpMap = textureWall;
-            //   value.material.bumpMap.repeat.set(4, 4);
-            //   value.material.bumpMap.wrapS = THREE.RepeatWrapping;
-            //   value.material.bumpMap.wrapT = THREE.RepeatWrapping;
-           
-            //   value.material.bumpMap.needsUpdate = true;
-              value.material.needsUpdate = true;
-              value.userData.draggable = false;
-              value.userData.name = "sidewall";
-              value.userData.limit = true;
+                value.material = new THREE.MeshStandardMaterial();
+                value.material.bumpScale = 0.03;
+                value.material.color = new THREE.Color(0x382c16);
+                value.material.DoubleSide = true;
+                value.material.bumpMap = textureWall;
+                value.material.bumpMap.repeat.set(4, 4);
+                value.material.bumpMap.wrapS = THREE.RepeatWrapping;
+                value.material.bumpMap.wrapT = THREE.RepeatWrapping;
+                value.material.bumpMap.needsUpdate = true;
+                value.material.needsUpdate = true;
+                value.userData.draggable = false;
+                value.userData.name = "sidewall";
+                value.userData.limit = true;
             }
             if (
               value.name == "left_outline" ||
@@ -120,9 +124,10 @@ class App {
             if (value.isMesh && value.name?.includes("Archite")) {
               value.material = new THREE.MeshPhongMaterial();
               value.material.map = textureRoof;
-            //   value.material.map.wrapS = THREE.RepeatWrapping;
-            //   value.material.map.wrapT = THREE.RepeatWrapping;
-            //   value.material.map.repeat.set(6, 6);
+            //   console.log(value.material)
+              value.material.map.wrapS = THREE.RepeatWrapping;
+              value.material.map.wrapT = THREE.RepeatWrapping;
+              value.material.map.repeat.set(6, 6);
               value.userData.draggable = false;
               value.userData.name = "roof";
               value.userData.limit = true;
