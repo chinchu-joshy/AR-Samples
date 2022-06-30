@@ -59,6 +59,7 @@ class App {
     this.fbxLoader.load("Model/model-3.fbx",  (object)=> {
       // (draggable.children[0].material.clippingPlanes = clipPlanes),
       // console.log(draggable)
+      this.model=object
       object.traverse(function (child) {
         if (child.isMesh && child.name.includes("Shed_SaltBox")) {
            
@@ -239,7 +240,7 @@ class App {
 
 
     /* ---------------------------- adding fbx model ---------------------------- */
-
+    this.scene.addEventListener("onefingermove", this.handleRotation);
     const geometry = new THREE.BoxBufferGeometry();
     const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     this.mesh = new THREE.Mesh(geometry, material);
@@ -260,5 +261,15 @@ class App {
   render() {
     this.renderer.render(this.scene, this.camera);
   }
+  handleRotation(event){
+   
+      this.model.rotation.y +=
+        event.detail.positionChange.x ;
+
+        this.model.rotation.x +=
+        event.detail.positionChange.y ;
+    
+  }
+ 
 }
 export { App };
