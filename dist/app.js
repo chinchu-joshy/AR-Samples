@@ -26,11 +26,20 @@ class App {
     );
     this.camera.position.set(0, 0, 4);
     this.scene = new THREE.Scene();
-    const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.1);
+
+
+    const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+    this.scene.add( ambientLight );
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.2);
     this.scene.add(ambient);
-    const light = new THREE.DirectionalLight();
-    light.position.set(0.2, 1, 1);
+    const light = new THREE.DirectionalLight(0xffffff,.8);
+    light.position.set(3, 5, 3);
     this.scene.add(light);
+
+
+
+
+
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -57,22 +66,25 @@ class App {
             child.castShadow = true;
             child.receiveShadow = true;
             child.material.map = textureBase;
-            child.material.bumpScale = 0.008;
+            child.material.bumpScale = 0.4;
             child.material.map.wrapS = THREE.RepeatWrapping;
             child.material.map.wrapT = THREE.RepeatWrapping;
-            child.material.color = new THREE.Color(0x0f0f0f0f);
-            child.userData.draggable = false;
-            child.userData.name = "bottom";
+            // child.material.color = new THREE.Color(0x7A5850);
+            
+            child.material.needsUpdate = true;
+            
         }
         if (child.isMesh && child.name.includes("Trim")) {
           child.material = new THREE.MeshPhongMaterial();
           child.castShadow = true;
           child.receiveShadow = true;
           child.material.bumpMap = texture;
-          child.material.bumpScale = 0.08;
+          child.material.bumpScale = 0.03;
           child.material.bumpMap.wrapS = THREE.RepeatWrapping;
           child.material.bumpMap.wrapT = THREE.RepeatWrapping;
           child.material.color = new THREE.Color(0xffffff);
+          child.material.bumpMap.needsUpdate = true;
+          child.material.needsUpdate = true;
           child.userData.draggable = false;
           child.userData.name = "trim";
           child.userData.limit = true;
@@ -96,7 +108,7 @@ class App {
                 value.name == "front_side")
             ) {
                 value.material = new THREE.MeshStandardMaterial();
-                value.material.bumpScale = 0.03;
+                value.material.bumpScale = 0.01;
                 value.material.color = new THREE.Color(0x382c16);
                 value.material.DoubleSide = true;
                 value.material.bumpMap = textureWall;
@@ -138,7 +150,7 @@ class App {
           child.visible = false;
         }
       });
-      object.position.set(0, -1, 0);
+      object.position.set(0, 0, 0);
     
     
       object.scale.set(0.005, 0.005, 0.005);
@@ -149,8 +161,8 @@ class App {
     
       this.fbxLoader.load("Model/vent.fbx", (object) => {
        console.log("checking")
-       object.position.set(.3,0,.8);
-       object.scale.set(0.05, 0.05, 0.05);
+       object.position.set(.3,1.2,.8);
+       object.scale.set(0.07, 0.07, 0.07);
         // object.position.set(13, 49.8, 14);
         object.traverse((child) => {
           if (child.isMesh && child.name.includes("Vent")) {
@@ -163,17 +175,68 @@ class App {
             child.material.map = ventTexture;
             child.material.map.wrapS = THREE.RepeatWrapping;
             child.material.map.wrapT = THREE.RepeatWrapping;
-            child.material.needsUpdate = true;
-            child.material.map.needsUpdate = true;
+            
             child.scale.set(0.1, 0.1, 0.1);
             child.rotation.y = Math.PI;
             child.material.color = new THREE.Color(0xffffff);
+            child.material.needsUpdate = true;
+            child.material.map.needsUpdate = true;
           }
         });
         this.scene.add(object);
         
 
       });
+      this.fbxLoader.load("Model/doubleDoor.fbx", (object) => {
+       
+        object.traverse((door) => {
+          window.door = object;
+          if (door.isMesh && door.name.includes("ramp")) {
+            door.visible = false;
+          }
+          if (
+            door.name.includes("Double__Door") ||
+            door.name.includes("Standard_Door") ||
+            door.name.includes("DoubleDoor_HingeFrame") ||
+            door.parent.name.includes("DoubleDoor_HingeFrame") ||
+            door.parent.name.includes("Standard_Door")
+          ) {
+            // console.log(door);
+            door.visible = true;
+          } else {
+            door.visible = false;
+          }
+          if (door.name.includes("DoorWood")) {
+            door.material = new THREE.MeshStandardMaterial();
+            door.material.bumpMap = textureWall;
+            //door.material.map = textureWall;
+            door.material.bumpScale = 0.01;
+            door.material.color = new THREE.Color(0x382c16);
+            door.material.bumpMap.needsUpdate = true;
+            door.material.needsUpdate = true;
+          }
+          if (door.name.includes("Trim_side")) {
+            door.material = new THREE.MeshPhongMaterial();
+            door.material.bumpMap = texture;
+            //door.material.map = texture;
+            door.material.bumpScale = 0.03;
+            door.material.bumpMap.wrapS = THREE.RepeatWrapping;
+            door.material.bumpMap.wrapT = THREE.RepeatWrapping;
+            door.material.color = new THREE.Color(0xffffff);
+            door.material.bumpMap.needsUpdate = true;
+            door.material.needsUpdate = true;
+          }
+          if (door.name.includes("Awning")) {
+            door.visible = false;
+          }
+        });
+        object.position.set(.1,.6, .8);
+        object.scale.set(0.005, 0.005, 0.005);
+        object.rotation.y = -Math.PI / 2;
+        object.userData.draggable = true;
+        this.scene.add(object);
+      });
+
 
     /* ---------------------------- adding fbx model ---------------------------- */
 
