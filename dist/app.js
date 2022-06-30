@@ -3,7 +3,7 @@ import { Stats } from "./js/stats.module.js";
 import { CanvasUI } from "./js/CanvasUI.js";
 import { ARButton } from "./js/arbutton.js";
 import { FBXLoader } from "./js/fbxloader.js";
-
+import { XRGestures } from "./js/XRGestures.js";
 import {
   Constants as MotionControllerConstants,
   fetchProfile,
@@ -13,6 +13,7 @@ let camera, scene, renderer;
 // let controller, textureBase, textureWall, texture, textureRoof, ventTexture;
 class App {
   constructor() {
+    const self=this;
     this.fbxLoader = new FBXLoader();
     const container = document.createElement("div");
     const text = document.createElement("p");
@@ -151,7 +152,7 @@ class App {
           child.visible = false;
         }
       });
-      object.position.set(0, 0, 0);
+      object.position.set(0, -1, 0);
     
     
       object.scale.set(0.005, 0.005, 0.005);
@@ -162,7 +163,7 @@ class App {
     
       this.fbxLoader.load("Model/vent.fbx", (object) => {
        console.log("checking")
-       object.position.set(.3,1.2,.8);
+       object.position.set(.3,.2,.8);
        object.scale.set(0.07, 0.07, 0.07);
         // object.position.set(13, 49.8, 14);
         object.traverse((child) => {
@@ -231,16 +232,21 @@ class App {
             door.visible = false;
           }
         });
-        object.position.set(.1,.6, .8);
+        object.position.set(.1,-.4, .8);
         object.scale.set(0.005, 0.005, 0.005);
         object.rotation.y = -Math.PI / 2;
         object.userData.draggable = true;
         this.scene.add(object);
       });
 
-
+      this.gestures=new XRGestures(this.renderer)
+      this.gestures.addEventListener('tap',(e)=>{
+        console.log("tap")
+       
+       
+      })
     /* ---------------------------- adding fbx model ---------------------------- */
-    this.scene.addEventListener("onefingermove", this.handleRotation);
+    // this.scene.addEventListener("onefingermove", this.handleRotation);
     const geometry = new THREE.BoxBufferGeometry();
     const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     this.mesh = new THREE.Mesh(geometry, material);
@@ -252,6 +258,13 @@ class App {
     this.renderer.setAnimationLoop(this.render.bind(this));
     window.addEventListener("resize", this.resize.bind(this));
     document.body.appendChild(ARButton.createButton(this.renderer));
+
+
+
+
+
+
+    
   }
   resize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
