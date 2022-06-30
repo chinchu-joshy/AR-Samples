@@ -147,20 +147,33 @@ class App {
  this.scene.add(object);
     });
     
-    //   fbxLoader.load("Model/vent.fbx", (object) => {
-    //    console.log("checking")
-    //    object.position.set(0,2,5);
-    //     // object.position.set(13, 49.8, 14);
-    //     object.traverse((child) => {
-    //       if (child.isMesh && child.name.includes("Vent")) {
-    //         // const pass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
-    //         // composer.addPass( pass );
-    //         addVent(child);
-    //       }
-    //     });
-    //     scene.add(object);
+      this.fbxLoader.load("Model/vent.fbx", (object) => {
+       console.log("checking")
+       object.position.set(.3,0,.8);
+       object.scale.set(0.05, 0.05, 0.05);
+        // object.position.set(13, 49.8, 14);
+        object.traverse((child) => {
+          if (child.isMesh && child.name.includes("Vent")) {
+            // const pass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
+            // composer.addPass( pass );
+           
+            child.material = new THREE.MeshPhongMaterial();
+            child.castShadow = true;
+            child.receiveShadow = true;
+            child.material.map = ventTexture;
+            child.material.map.wrapS = THREE.RepeatWrapping;
+            child.material.map.wrapT = THREE.RepeatWrapping;
+            child.material.needsUpdate = true;
+            child.material.map.needsUpdate = true;
+            child.scale.set(0.1, 0.1, 0.1);
+            child.rotation.y = Math.PI;
+            child.material.color = new THREE.Color(0xffffff);
+          }
+        });
+        this.scene.add(object);
+        
 
-    //   });
+      });
 
     /* ---------------------------- adding fbx model ---------------------------- */
 
